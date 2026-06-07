@@ -12,12 +12,11 @@ permissions:
 
 concurrency:
   group: gacha-fetch
-  cancel-in-progress: true # 新しい起動が来たら古いループを置き換える
+  cancel-in-progress: false
 
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 340 # 6時間上限の手前で安全に終了
     steps:
       - uses: actions/checkout@v4
 
@@ -35,30 +34,21 @@ jobs:
           path: .tfcache
           key: clip-vit-base-patch32-v1
 
-      # 一度起動したら営業時間中(JST10-20時)は10分おきにループ。
-      # GitHubのcronが数時間に1回しか発火しなくても、その1回が約5.5時間ぶんをカバーする。
-      - name: Fetch loop (≈10分おき・営業時間中)
+      - name: Fetch RSS & detect restocks
+        run: node fetch.mjs
         env:
           KEYWORDS: "ヨッシー,よっしー,Yoshi"
           TRANSFORMERS_CACHE: .tfcache
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }} # 未設定なら通知スキップ
+
+      - name: Commit data if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          end=$(( $(date +%s) + 19800 )) # 最大5.5時間で終了
-          while :; do
-            h=$(TZ=Asia/Tokyo date +%-H)
-            if [ "$h" -ge 10 ] && [ "$h" -le 20 ]; then
-              node fetch.mjs || true
-              git add data/
-              if ! git diff --staged --quiet; then
-                git commit -m "data: update ($(TZ=Asia/Tokyo date '+%m/%d %H:%M')JST)"
-                git push || (git pull --rebase --autostash && git push)
-              fi
-            fi
-            h2=$(TZ=Asia/Tokyo date +%-H)
-            if [ "$(date +%s)" -ge "$end" ] || [ "$h2" -gt 20 ]; then
-              echo "ループ終了（時間外 or 上限）"; break
-            fi
-            sleep 600
-          done
+          git add data/
+          if git diff --staged --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "data: update ($(TZ=Asia/Tokyo date '+%m/%d %H:%M')JST)"
+            git push
+          fi

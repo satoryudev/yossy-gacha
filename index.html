@@ -101,7 +101,7 @@
   .card .newflag { font-size:.68rem; font-weight:800; color:#5b4500; background:var(--sun); padding:3px 9px; border-radius:999px; letter-spacing:.04em; }
   .card .body { white-space: pre-wrap; word-break: break-word; font-size: .95rem; }
   .card .detected { margin-top: 10px; font-size: .83rem; color: var(--yoshi-d); font-weight: 700; background:#eafaef; padding:7px 11px; border-radius:11px; }
-  .card .thumb { display: block; margin-top: 12px; width:100%; max-height: 300px; object-fit: cover; border-radius: 14px; border: 1px solid var(--line); }
+  .card .haspic { display:inline-block; margin-top:11px; font-size:.8rem; color:var(--muted); background:#f1f5f0; border:1px dashed #d7e3d6; border-radius:10px; padding:6px 11px; }
   .card a.open {
     display: inline-flex; align-items:center; gap:5px; margin-top: 13px; font-size: .82rem; font-weight: 800;
     color: var(--yoshi-d); background:#eafaef; padding:8px 15px; border-radius: 999px; text-decoration: none; transition: all .16s ease;
@@ -135,6 +135,8 @@
 
   footer { text-align: center; color: var(--muted); font-size: .77rem; margin-top: 32px; font-weight:500; }
   footer a { color: var(--yoshi-d); text-decoration: none; font-weight:700; }
+  footer .disc { background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px 15px; margin-bottom:12px; line-height:1.65; text-align:left; box-shadow:0 2px 8px -5px rgba(33,84,48,.3); }
+  footer .disc b { color: var(--ink); }
   .err { color: #e8590c; }
   .hidden { display: none; }
   @media (prefers-reduced-motion: reduce){ *{animation:none!important} }
@@ -166,8 +168,11 @@
     <div id="view-feed" class="hidden"></div>
 
     <footer>
-      営業時間中はだいたい10〜30分おきに自動チェック ／ データは
-      <a href="https://github.com/satoryudev/yossy-gacha" target="_blank" rel="noopener">GitHub</a> で公開
+      <p class="disc">⚠️ 非公式の個人運営ツールです。各店舗・各メーカー（任天堂／バンダイ等）とは一切関係ありません。
+      在庫・入荷情報の正確性は保証しません。最新・正確な情報は<b>各店の公式X・店頭</b>でご確認ください。
+      投稿・商品名・画像等の権利は各権利者に帰属します。</p>
+      <p>営業時間中はだいたい10〜30分おきに自動チェック ／ 出典は各店の公式X ／ コードは
+      <a href="https://github.com/satoryudev/yossy-gacha" target="_blank" rel="noopener">GitHub</a></p>
     </footer>
   </main>
 
@@ -209,12 +214,11 @@ function card(it) {
   const isNew = LAST_VISIT > 0 && new Date(it.pubDate).getTime() > LAST_VISIT;
   const detected = it.vision && it.vision.yoshi
     ? `<div class="detected">🔎 AI画像判定: ヨッシーの可能性 (${Math.round((it.vision.score || 0) * 100)}%)</div>` : "";
-  const img = it.images && it.images[0]
-    ? `<img class="thumb" src="${it.images[0]}" loading="lazy" alt="商品画像">` : "";
+  const pic = it.hasImage ? `<div class="haspic">🖼 画像つき投稿（写真はXでご確認ください）</div>` : "";
   return `<article class="card${hit ? " hit" : ""}">
     <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${isNew ? '<span class="newflag">NEW</span>' : ""}${hit ? '<span class="hitflag">🎯 ヨッシー</span>' : ""}</div>
     <div class="body">${esc(it.title)}</div>
-    ${detected}${img}
+    ${detected}${pic}
     <a class="open" href="${it.link}" target="_blank" rel="noopener">Xで見る →</a>
   </article>`;
 }

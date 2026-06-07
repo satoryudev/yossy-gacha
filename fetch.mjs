@@ -132,6 +132,13 @@ async function analyzeImage(imageUrl) {
   }
 }
 
+// 公開保存用に整形（画像URLは保存・再配布しない。有無のフラグのみ）
+const pub = (it) => ({
+  account: it.account, shop: it.shop, title: it.title, link: it.link,
+  pubDate: it.pubDate, guid: it.guid, hasImage: it.images.length > 0,
+  textHits: it.textHits, vision: it.vision,
+});
+
 function load(file, fallback) {
   try { return JSON.parse(readFileSync(file, "utf8")); } catch { return fallback; }
 }
@@ -212,8 +219,8 @@ for (const it of candidates.slice(0, VISION_MAX)) {
 }
 for (const it of all) if (analyzed[it.guid]) it.vision = analyzed[it.guid];
 
-// --- フィード（全店の最新）---
-save(FEED_FILE, all.slice(0, FEED_MAX));
+// --- フィード（全店の最新。画像URLは保存しない）---
+save(FEED_FILE, all.slice(0, FEED_MAX).map(pub));
 
 // --- ヒット（履歴＆通知）---
 const firstRun = !existsSync(NOTIFIED_FILE);
@@ -227,7 +234,7 @@ for (const it of hitsNow) notified.add(it.guid);
 if (newHits.length) {
   console.log(`🎯 ヨッシー新着 ${newHits.length}件${firstRun ? "（初回・通知スキップ）" : ""}`);
   for (const m of newHits) console.log(`- [${m.shop}] ${m.title.replace(/\s+/g, " ").slice(0, 60)}`);
-  matchesStore.unshift(...newHits);
+  matchesStore.unshift(...newHits.map(pub));
   if (!firstRun) await notifyDiscord(newHits);
 } else {
   console.log("ヨッシー新着なし");
