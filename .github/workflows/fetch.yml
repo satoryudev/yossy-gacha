@@ -27,9 +27,10 @@ jobs:
       - name: Fetch RSS & detect restocks
         run: node fetch.mjs
         env:
-          ACCOUNT: Cplaviit
           KEYWORDS: "ヨッシー,よっしー,Yoshi"
-          # Discord通知用（リポジトリのSecretsに登録。未設定なら通知はスキップ）
+          # Gemini Vision 画像判定用（未設定なら画像判定はスキップ＝テキストのみ）
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Discord通知用（未設定なら通知はスキップ）
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Commit data if changed

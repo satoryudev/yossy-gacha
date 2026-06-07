@@ -49,6 +49,8 @@
   .card .date { color: var(--muted); font-size: .78rem; }
   .card .hitflag { font-size:.74rem; font-weight:700; color:#0f1419; background:var(--accent); padding:2px 8px; border-radius:999px; }
   .card .body { white-space: pre-wrap; word-break: break-word; font-size: .95rem; }
+  .card .detected { margin-top: 8px; font-size: .82rem; color: var(--accent); font-weight: 600; }
+  .card .thumb { display: block; margin-top: 10px; max-width: 100%; max-height: 280px; border-radius: 8px; border: 1px solid var(--line); }
   .card a.open { display: inline-block; margin-top: 11px; font-size: .83rem; font-weight: 600; color: var(--accent-2); text-decoration: none; }
   .card a.open:hover { text-decoration: underline; }
 
@@ -119,10 +121,15 @@ function shopBadge(shop) {
   return `<span class="shop" style="color:${s.c};background:${s.bg};border-color:${s.c}55">${esc(shop)}</span>`;
 }
 function card(it) {
-  const hit = it.hits && it.hits.length;
+  const hit = (it.textHits && it.textHits.length) || (it.vision && it.vision.yoshi);
+  const detected = it.vision && it.vision.yoshi && it.vision.products && it.vision.products.length
+    ? `<div class="detected">🔎 AI検出: ${it.vision.products.slice(0, 4).map(esc).join(" / ")}</div>` : "";
+  const img = it.images && it.images[0]
+    ? `<img class="thumb" src="${it.images[0]}" loading="lazy" alt="商品画像">` : "";
   return `<article class="card${hit ? " hit" : ""}">
-    <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${hit ? '<span class="hitflag">🎯 ヒット</span>' : ""}</div>
+    <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${hit ? '<span class="hitflag">🎯 ヨッシー</span>' : ""}</div>
     <div class="body">${esc(it.title)}</div>
+    ${detected}${img}
     <a class="open" href="${it.link}" target="_blank" rel="noopener">Xで見る →</a>
   </article>`;
 }
@@ -146,7 +153,8 @@ function show(which) {
       `<span class="chip live">状況 <b>${matches.length ? "入荷ヒットあり" : "監視中"}</b></span>` +
       `<span class="chip">最終チェック <b>${ago(status.lastChecked)}</b></span>` +
       `<span class="chip">監視 <b>${(status.shops || []).length}</b>店</span>` +
-      `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>`;
+      `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>` +
+      `<span class="chip">AI画像判定 <b>${status.visionEnabled ? "ON" : "OFF"}</b></span>`;
     document.getElementById("keywords").innerHTML =
       "ウォッチ語：" + (status.keywords || []).map((k) => `<span class="kw">${esc(k)}</span>`).join("");
   } else {
