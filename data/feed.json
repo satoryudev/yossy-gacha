@@ -1201,7 +1201,10 @@
       "https://pbs.twimg.com/media/GmJSXX5acAApJ2S.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1214,7 +1217,10 @@
       "https://pbs.twimg.com/media/GmJSUjSbcAAJ_bl.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.172
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1228,7 +1234,10 @@
       "https://pbs.twimg.com/media/Gl-BoT9a0AAxZcd.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.005
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1242,7 +1251,10 @@
       "https://pbs.twimg.com/media/Gl6h04nacAA0tbw.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1256,7 +1268,10 @@
       "https://pbs.twimg.com/media/Gl6UqyVX0AAJdpV.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.002
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1270,6 +1285,9 @@
       "https://pbs.twimg.com/media/Gl0f4b5WMAALYUw.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   }
 ]
