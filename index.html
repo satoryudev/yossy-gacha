@@ -4,74 +4,128 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>ヨッシー ガチャ入荷ウォッチ｜津田沼</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mochiy+Pop+One&family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f1419; --card: #1a2029; --line: #2a3340;
-    --text: #e7edf3; --muted: #8b97a6; --accent: #4ade80; --accent-2: #38bdf8; --warn: #fbbf24;
+    --bg1:#e7f8ee; --bg2:#fef7e7;
+    --ink:#243a2c; --muted:#7b8d80; --card:#ffffff; --line:#e7efe5;
+    --yoshi:#37b24d; --yoshi-d:#2b9440; --sun:#ffd43b; --orange:#ff922b;
+    --sky:#4dabf7; --shadow:0 10px 24px -12px rgba(33,84,48,.35);
+    --disp:"Mochiy Pop One", "Zen Maru Gothic", system-ui, sans-serif;
+    --body:"Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Yu Gothic", system-ui, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
   body {
-    font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
-    background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased;
+    font-family: var(--body); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased;
+    background:
+      radial-gradient(rgba(255,255,255,.6) 1.4px, transparent 1.5px) 0 0 / 20px 20px,
+      linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%) fixed;
+    min-height: 100vh;
   }
-  .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 64px; }
+  /* ふわっと浮かぶカプセルの装飾 */
+  body::before {
+    content:""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background:
+      radial-gradient(circle at 88% 8%, rgba(255,212,59,.30), transparent 22%),
+      radial-gradient(circle at 6% 30%, rgba(77,171,247,.22), transparent 20%),
+      radial-gradient(circle at 95% 78%, rgba(55,178,77,.20), transparent 22%);
+    filter: blur(8px);
+  }
+
+  .wrap { max-width: 660px; margin: 0 auto; padding: 0 16px 72px; }
+
   header {
-    background: radial-gradient(120% 140% at 0% 0%, #1f3a2e 0%, #122031 55%, #0f1419 100%);
-    border-bottom: 1px solid var(--line); padding: 26px 16px 22px;
+    background: linear-gradient(155deg, #4ad06a 0%, #37b24d 55%, #2b9440 100%);
+    border-radius: 0 0 30px 30px; padding: 30px 18px 26px; position: relative; overflow: hidden;
+    box-shadow: 0 14px 30px -16px rgba(43,148,64,.7);
   }
-  .header-inner { max-width: 680px; margin: 0 auto; }
-  h1 { font-size: 1.4rem; letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
-  h1 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-  .sub { color: var(--muted); font-size: .88rem; margin-top: 6px; }
-  .sub a { color: var(--accent-2); text-decoration: none; }
+  header::after { /* つやハイライト */
+    content:""; position:absolute; top:-60%; left:-10%; width:70%; height:160%;
+    background: radial-gradient(closest-side, rgba(255,255,255,.35), transparent); transform: rotate(18deg);
+  }
+  .header-inner { max-width: 660px; margin: 0 auto; position: relative; z-index: 1; }
+  h1 {
+    font-family: var(--disp); font-size: 1.7rem; line-height: 1.3; color: #fff;
+    display: flex; align-items: center; gap: 12px; text-shadow: 0 2px 0 rgba(0,0,0,.12);
+  }
+  .egg { /* たまご型カプセルのアイコン */
+    flex: none; width: 30px; height: 36px; border-radius: 50% 50% 48% 48% / 60% 60% 40% 40%;
+    background: linear-gradient(160deg,#fff 0 55%, #d8f3df 55% 100%);
+    box-shadow: inset 0 -3px 0 rgba(43,148,64,.2), 0 3px 8px rgba(0,0,0,.18);
+    position: relative; animation: bob 3s ease-in-out infinite;
+  }
+  .egg::before { content:""; position:absolute; left:6px; top:6px; width:9px; height:6px; border-radius:50%; background:rgba(255,255,255,.9); transform: rotate(-20deg); }
+  @keyframes bob { 0%,100%{transform:translateY(0) rotate(-3deg)} 50%{transform:translateY(-4px) rotate(3deg)} }
+  .live { display:inline-block; width:9px;height:9px;border-radius:50%;background:#eaffef;box-shadow:0 0 0 3px rgba(255,255,255,.35); animation:pulse 1.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+  .sub { color: #eafff0; font-size: .9rem; margin-top: 8px; font-weight: 500; opacity:.95; }
 
-  .status { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
-  .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; font-size: .82rem; color: var(--muted); }
-  .chip b { color: var(--text); font-weight: 600; }
-  .chip.live b { color: var(--accent); }
-  .keywords { margin: 8px 0 16px; font-size: .84rem; color: var(--muted); }
-  .kw { display:inline-block; background:#14202b; border:1px solid var(--line); color:var(--accent-2); border-radius:6px; padding:1px 8px; margin:0 4px 4px 0; }
+  .status { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 8px; }
+  .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; font-size: .8rem; color: var(--muted); box-shadow: 0 2px 6px -3px rgba(33,84,48,.25); }
+  .chip b { color: var(--ink); font-weight: 700; }
+  .chip.alive b { color: var(--yoshi-d); }
+  .keywords { margin: 8px 2px 18px; font-size: .82rem; color: var(--muted); }
+  .kw { display:inline-block; background:#eafaef; color:var(--yoshi-d); border-radius:7px; padding:2px 9px; margin:0 5px 5px 0; font-weight:700; }
 
-  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  /* セグメント型タブ */
+  .tabs { display: flex; background: #ffffff; border: 1px solid var(--line); border-radius: 999px; padding: 5px; gap: 5px; margin-bottom: 18px; box-shadow: var(--shadow); }
   .tab {
-    flex: 1; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer;
-    background: var(--card); border: 1px solid var(--line); color: var(--muted); font-size: .9rem; font-weight: 600;
-    user-select: none;
+    flex: 1; text-align: center; padding: 11px 6px; border-radius: 999px; cursor: pointer;
+    color: var(--muted); font-size: .92rem; font-weight: 700; user-select: none; transition: all .22s ease;
   }
-  .tab.active { color: var(--text); border-color: var(--accent); background: #16241d; }
-  .tab .badge { display:inline-block; min-width:18px; padding:0 5px; margin-left:6px; border-radius:999px; background:var(--accent); color:#0f1419; font-size:.72rem; }
+  .tab.active { color: #fff; background: linear-gradient(160deg,#4ad06a,#2b9440); box-shadow: 0 6px 14px -6px rgba(43,148,64,.8); }
+  .tab .badge { display:inline-block; min-width:20px; padding:0 6px; margin-left:7px; border-radius:999px; background:var(--sun); color:#5b4500; font-size:.72rem; font-weight:800; }
+  .tab.active .badge { background:#fff; color:var(--yoshi-d); }
 
-  .card { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: 12px; padding: 14px 16px 12px; margin-bottom: 14px; }
-  .card.hit { border-left-color: var(--accent); }
-  .card .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom: 8px; }
-  .shop { font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; border:1px solid transparent; }
-  .card .date { color: var(--muted); font-size: .78rem; }
-  .card .hitflag { font-size:.74rem; font-weight:700; color:#0f1419; background:var(--accent); padding:2px 8px; border-radius:999px; }
-  .card .newflag { font-size:.7rem; font-weight:800; color:#0f1419; background:var(--warn); padding:2px 7px; border-radius:999px; letter-spacing:.03em; }
-  .feedfilter { display:flex; align-items:center; gap:8px; margin:-4px 0 16px; font-size:.86rem; color:var(--muted); cursor:pointer; user-select:none; }
-  .feedfilter input { width:16px; height:16px; accent-color:var(--accent); }
+  .feedfilter { display:flex; align-items:center; gap:9px; margin:-6px 4px 16px; font-size:.86rem; color:var(--muted); cursor:pointer; user-select:none; font-weight:500; }
+  .feedfilter input { width:17px; height:17px; accent-color:var(--yoshi); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 20px;
+    padding: 16px 17px 14px; margin-bottom: 15px; box-shadow: var(--shadow);
+    animation: rise .5s cubic-bezier(.2,.7,.3,1) both; transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -14px rgba(33,84,48,.45); }
+  @keyframes rise { from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:translateY(0)} }
+  .card:nth-child(1){animation-delay:.02s}.card:nth-child(2){animation-delay:.06s}.card:nth-child(3){animation-delay:.1s}
+  .card:nth-child(4){animation-delay:.14s}.card:nth-child(5){animation-delay:.18s}.card:nth-child(6){animation-delay:.22s}
+  .card:nth-child(7){animation-delay:.26s}.card:nth-child(8){animation-delay:.3s}
+  .card.hit { background: linear-gradient(180deg,#f3fcf5,#ffffff); border-color: #b6e8c2; box-shadow: 0 12px 26px -12px rgba(43,148,64,.5), 0 0 0 1.5px #6fd98a inset; }
+  .card .meta { display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-bottom: 9px; }
+  .shop { font-size: .73rem; font-weight: 800; padding: 3px 11px; border-radius: 999px; border:1.5px solid transparent; }
+  .card .date { color: var(--muted); font-size: .77rem; font-weight:500; }
+  .card .hitflag { font-size:.74rem; font-weight:800; color:#fff; background:linear-gradient(160deg,#4ad06a,#2b9440); padding:3px 10px; border-radius:999px; box-shadow:0 3px 8px -3px rgba(43,148,64,.8); }
+  .card .newflag { font-size:.68rem; font-weight:800; color:#5b4500; background:var(--sun); padding:3px 9px; border-radius:999px; letter-spacing:.04em; }
   .card .body { white-space: pre-wrap; word-break: break-word; font-size: .95rem; }
-  .card .detected { margin-top: 8px; font-size: .82rem; color: var(--accent); font-weight: 600; }
-  .card .thumb { display: block; margin-top: 10px; max-width: 100%; max-height: 280px; border-radius: 8px; border: 1px solid var(--line); }
-  .card a.open { display: inline-block; margin-top: 11px; font-size: .83rem; font-weight: 600; color: var(--accent-2); text-decoration: none; }
-  .card a.open:hover { text-decoration: underline; }
+  .card .detected { margin-top: 10px; font-size: .83rem; color: var(--yoshi-d); font-weight: 700; background:#eafaef; padding:7px 11px; border-radius:11px; }
+  .card .thumb { display: block; margin-top: 12px; width:100%; max-height: 300px; object-fit: cover; border-radius: 14px; border: 1px solid var(--line); }
+  .card a.open {
+    display: inline-flex; align-items:center; gap:5px; margin-top: 13px; font-size: .82rem; font-weight: 800;
+    color: var(--yoshi-d); background:#eafaef; padding:8px 15px; border-radius: 999px; text-decoration: none; transition: all .16s ease;
+  }
+  .card a.open:hover { background:var(--yoshi); color:#fff; transform: translateX(2px); }
 
-  .empty { text-align: center; padding: 48px 20px; color: var(--muted); background: var(--card); border: 1px dashed var(--line); border-radius: 14px; }
-  .empty .big { font-size: 2.4rem; margin-bottom: 12px; }
-  .empty button { margin-top:14px; background:var(--accent); color:#0f1419; border:0; border-radius:8px; padding:9px 16px; font-weight:700; cursor:pointer; }
+  .empty { text-align: center; padding: 54px 20px; color: var(--muted); background: var(--card); border: 2px dashed #cfe6d4; border-radius: 22px; box-shadow: var(--shadow); }
+  .empty .big { font-size: 3rem; margin-bottom: 14px; animation: bob 3s ease-in-out infinite; }
+  .empty p { margin: 3px 0; font-weight:500; }
+  .empty button { margin-top:18px; background:linear-gradient(160deg,#4ad06a,#2b9440); color:#fff; border:0; border-radius:999px; padding:11px 20px; font-weight:800; font-family:var(--body); cursor:pointer; box-shadow:0 8px 16px -7px rgba(43,148,64,.9); }
+  .empty button:hover { filter: brightness(1.06); }
 
-  footer { text-align: center; color: var(--muted); font-size: .78rem; margin-top: 30px; }
-  footer a { color: var(--accent-2); text-decoration: none; }
-  .err { color: var(--warn); }
+  footer { text-align: center; color: var(--muted); font-size: .77rem; margin-top: 32px; font-weight:500; }
+  footer a { color: var(--yoshi-d); text-decoration: none; font-weight:700; }
+  .err { color: #e8590c; }
   .hidden { display: none; }
+  @media (prefers-reduced-motion: reduce){ *{animation:none!important} }
 </style>
 </head>
 <body>
   <header>
     <div class="header-inner">
-      <h1><span class="dot"></span>ヨッシー ガチャ入荷ウォッチ</h1>
-      <p class="sub">津田沼・習志野のガチャ専門店を自動監視</p>
+      <h1><span class="egg"></span>ヨッシー ガチャ入荷ウォッチ <span class="live"></span></h1>
+      <p class="sub">津田沼・習志野のガチャ専門店を自動で見張ってます</p>
     </div>
   </header>
 
@@ -100,10 +154,10 @@
 <script>
 const bust = "?_=" + Date.now();
 const SHOP_COLORS = {
-  "C-pla 津田沼ビート店":        { c: "#4ade80", bg: "#16241d" },
-  "C-pla モリシア津田沼店":       { c: "#38bdf8", bg: "#13202b" },
-  "C-pla イオンタウン東習志野店": { c: "#c084fc", bg: "#1f1830" },
-  "ガチャガチャの森【公式】":     { c: "#fbbf24", bg: "#2a2110" },
+  "C-pla 津田沼ビート店":        { c: "#1f8f3a", bg: "#e3f6e6" },
+  "C-pla モリシア津田沼店":       { c: "#1273b8", bg: "#e2f1fb" },
+  "C-pla イオンタウン東習志野店": { c: "#7c43c8", bg: "#f0e9fb" },
+  "ガチャガチャの森【公式】":     { c: "#c06a12", bg: "#fbeede" },
 };
 const esc = (s) => (s || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const jst = (s) => {
@@ -124,8 +178,8 @@ async function getJson(path, fallback) {
   catch { return fallback; }
 }
 function shopBadge(shop) {
-  const s = SHOP_COLORS[shop] || { c: "#8b97a6", bg: "#1a2029" };
-  return `<span class="shop" style="color:${s.c};background:${s.bg};border-color:${s.c}55">${esc(shop)}</span>`;
+  const s = SHOP_COLORS[shop] || { c: "#7b8d80", bg: "#eef3ee" };
+  return `<span class="shop" style="color:${s.c};background:${s.bg};border-color:${s.c}44">${esc(shop)}</span>`;
 }
 let LAST_VISIT = 0;
 let FEED_DATA = [];
@@ -149,7 +203,7 @@ function renderFeed() {
   const list = only ? FEED_DATA.filter((it) => isRestock(it.title)) : FEED_DATA;
   document.getElementById("view-feed").innerHTML = list.length
     ? list.map(card).join("")
-    : `<div class="empty"><div class="big">📭</div><p>${only ? "現在、入荷情報の投稿はありません。" : "フィードを取得できませんでした。"}</p></div>`;
+    : `<div class="empty"><div class="big">📭</div><p>${only ? "いまは入荷情報の投稿はありません。" : "フィードを取得できませんでした。"}</p></div>`;
 }
 function show(which) {
   document.getElementById("view-watch").classList.toggle("hidden", which !== "watch");
@@ -169,7 +223,7 @@ function show(which) {
   const statusEl = document.getElementById("status");
   if (status) {
     statusEl.innerHTML =
-      `<span class="chip live">状況 <b>${matches.length ? "入荷ヒットあり" : "監視中"}</b></span>` +
+      `<span class="chip alive">状況 <b>${matches.length ? "入荷ヒットあり🎉" : "監視中"}</b></span>` +
       `<span class="chip">最終チェック <b>${ago(status.lastChecked)}</b></span>` +
       `<span class="chip">監視 <b>${(status.shops || []).length}</b>店</span>` +
       `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>` +
@@ -189,8 +243,8 @@ function show(which) {
   document.getElementById("view-watch").innerHTML = matches.length
     ? matches.map(card).join("")
     : `<div class="empty"><div class="big">🥚</div>
-        <p>まだウォッチ語（ヨッシー等）のヒットはありません。</p>
-        <p>入荷ポストを検知するとここに表示＆Discord通知されます。</p>
+        <p>まだヨッシーの入荷は見つかってません。</p>
+        <p>見つけたらここに表示＆通知します。気長に待ちましょう🦖</p>
         <button onclick="show('feed')">🛍 全店の最新を見る</button></div>`;
 
   renderFeed();
