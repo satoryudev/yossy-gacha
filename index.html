@@ -48,6 +48,9 @@
   .shop { font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; border:1px solid transparent; }
   .card .date { color: var(--muted); font-size: .78rem; }
   .card .hitflag { font-size:.74rem; font-weight:700; color:#0f1419; background:var(--accent); padding:2px 8px; border-radius:999px; }
+  .card .newflag { font-size:.7rem; font-weight:800; color:#0f1419; background:var(--warn); padding:2px 7px; border-radius:999px; letter-spacing:.03em; }
+  .feedfilter { display:flex; align-items:center; gap:8px; margin:-4px 0 16px; font-size:.86rem; color:var(--muted); cursor:pointer; user-select:none; }
+  .feedfilter input { width:16px; height:16px; accent-color:var(--accent); }
   .card .body { white-space: pre-wrap; word-break: break-word; font-size: .95rem; }
   .card .detected { margin-top: 8px; font-size: .82rem; color: var(--accent); font-weight: 600; }
   .card .thumb { display: block; margin-top: 10px; max-width: 100%; max-height: 280px; border-radius: 8px; border: 1px solid var(--line); }
@@ -80,6 +83,10 @@
       <div class="tab active" id="tab-watch" onclick="show('watch')">🎯 ウォッチ<span class="badge hidden" id="watchBadge">0</span></div>
       <div class="tab" id="tab-feed" onclick="show('feed')">🛍 全店の最新</div>
     </div>
+
+    <label id="feedFilter" class="feedfilter hidden">
+      <input type="checkbox" id="restockOnly" onchange="renderFeed()"> 🟢 入荷情報だけ表示（完売・告知を除く）
+    </label>
 
     <div id="view-watch"></div>
     <div id="view-feed" class="hidden"></div>
@@ -120,22 +127,34 @@ function shopBadge(shop) {
   const s = SHOP_COLORS[shop] || { c: "#8b97a6", bg: "#1a2029" };
   return `<span class="shop" style="color:${s.c};background:${s.bg};border-color:${s.c}55">${esc(shop)}</span>`;
 }
+let LAST_VISIT = 0;
+let FEED_DATA = [];
+const isRestock = (t) => /入荷|再入荷|入荷予定/.test(t) && !/完売/.test(t);
 function card(it) {
   const hit = (it.textHits && it.textHits.length) || (it.vision && it.vision.yoshi);
+  const isNew = LAST_VISIT > 0 && new Date(it.pubDate).getTime() > LAST_VISIT;
   const detected = it.vision && it.vision.yoshi
     ? `<div class="detected">🔎 AI画像判定: ヨッシーの可能性 (${Math.round((it.vision.score || 0) * 100)}%)</div>` : "";
   const img = it.images && it.images[0]
     ? `<img class="thumb" src="${it.images[0]}" loading="lazy" alt="商品画像">` : "";
   return `<article class="card${hit ? " hit" : ""}">
-    <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${hit ? '<span class="hitflag">🎯 ヨッシー</span>' : ""}</div>
+    <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${isNew ? '<span class="newflag">NEW</span>' : ""}${hit ? '<span class="hitflag">🎯 ヨッシー</span>' : ""}</div>
     <div class="body">${esc(it.title)}</div>
     ${detected}${img}
     <a class="open" href="${it.link}" target="_blank" rel="noopener">Xで見る →</a>
   </article>`;
 }
+function renderFeed() {
+  const only = document.getElementById("restockOnly")?.checked;
+  const list = only ? FEED_DATA.filter((it) => isRestock(it.title)) : FEED_DATA;
+  document.getElementById("view-feed").innerHTML = list.length
+    ? list.map(card).join("")
+    : `<div class="empty"><div class="big">📭</div><p>${only ? "現在、入荷情報の投稿はありません。" : "フィードを取得できませんでした。"}</p></div>`;
+}
 function show(which) {
   document.getElementById("view-watch").classList.toggle("hidden", which !== "watch");
   document.getElementById("view-feed").classList.toggle("hidden", which !== "feed");
+  document.getElementById("feedFilter").classList.toggle("hidden", which !== "feed");
   document.getElementById("tab-watch").classList.toggle("active", which === "watch");
   document.getElementById("tab-feed").classList.toggle("active", which === "feed");
 }
@@ -161,6 +180,9 @@ function show(which) {
     statusEl.innerHTML = `<span class="chip err">状況データを読み込めませんでした</span>`;
   }
 
+  LAST_VISIT = Number(localStorage.getItem("yg_lastVisit") || 0);
+  FEED_DATA = feed;
+
   const wb = document.getElementById("watchBadge");
   if (matches.length) { wb.textContent = matches.length; wb.classList.remove("hidden"); }
 
@@ -171,9 +193,11 @@ function show(which) {
         <p>入荷ポストを検知するとここに表示＆Discord通知されます。</p>
         <button onclick="show('feed')">🛍 全店の最新を見る</button></div>`;
 
-  document.getElementById("view-feed").innerHTML = feed.length
-    ? feed.map(card).join("")
-    : `<div class="empty"><div class="big">📭</div><p>フィードを取得できませんでした。</p></div>`;
+  renderFeed();
+
+  // 今回見た最新ポスト時刻を記録 → 次回はこれより新しい投稿だけ NEW 表示
+  const newest = feed.reduce((m, it) => Math.max(m, new Date(it.pubDate).getTime() || 0), 0);
+  if (newest) localStorage.setItem("yg_lastVisit", String(newest));
 })();
 </script>
 </body>
