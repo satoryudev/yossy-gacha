@@ -1,24 +1,38 @@
 #!/usr/bin/env node
-// @Cplaviit（#C-pla 津田沼ビート店）のポストを Nitter RSS で取得し、
-// キーワードに当たる新着だけを data/ に追記する。GitHub Actions から定期実行する想定。
+// 津田沼近辺の複数ガチャ店のXポストを Nitter RSS で取得する。
+// - data/feed.json   : 全店の最新ポスト（ヨッシー以外も含む）
+// - data/matches.json: ウォッチ語ヒットの履歴（通知対象）
+// 新規ヒットは Discord へ通知。GitHub Actions から定期実行する想定。
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
-const ACCOUNT = process.env.ACCOUNT || "Cplaviit";
+// 監視対象（津田沼・習志野中心。Nitterで稼働確認済みのアカウントのみ）
+const ACCOUNTS = [
+  { handle: "Cplaviit",       shop: "C-pla 津田沼ビート店" },
+  { handle: "Cpla62114446",   shop: "C-pla モリシア津田沼店" },
+  { handle: "cpla_narashino", shop: "C-pla イオンタウン東習志野店" },
+  { handle: "gachanomori",    shop: "ガチャガチャの森【公式】" },
+];
+
+// ウォッチ語（ヒットで通知＋ウォッチ一覧に表示）。"*" を含めると全件ヒット扱い（テスト用）。
 const KEYWORDS = (process.env.KEYWORDS || "ヨッシー,よっしー,Yoshi")
   .split(",").map((s) => s.trim()).filter(Boolean);
-// Nitter インスタンスは落ちることがあるので複数を順に試す
+const MATCH_ALL = KEYWORDS.includes("*");
+
+// Nitter は不調になることがあるので複数を順に試す
 const INSTANCES = (process.env.NITTER_INSTANCES ||
   "nitter.net,nitter.poast.org,nitter.privacydev.net,lightbrd.com")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
+const FEED_MAX = 80;
 const SEEN_FILE = "data/seen.json";
 const MATCH_FILE = "data/matches.json";
+const FEED_FILE = "data/feed.json";
 
-async function fetchRss() {
+async function fetchRss(handle) {
   for (const inst of INSTANCES) {
-    const url = `https://${inst}/${ACCOUNT}/rss`;
+    const url = `https://${inst}/${handle}/rss`;
     try {
       const res = await fetch(url, {
         headers: {
@@ -31,18 +45,16 @@ async function fetchRss() {
         },
         signal: AbortSignal.timeout(20000),
       });
-      if (!res.ok) { console.error(`  ${inst}: HTTP ${res.status}`); continue; }
+      if (!res.ok) { console.error(`  ${handle}@${inst}: HTTP ${res.status}`); continue; }
       const text = await res.text();
-      if (text.includes("<item>")) {
-        console.error(`  取得元: ${inst}`);
-        return text;
-      }
-      console.error(`  ${inst}: itemなし`);
+      if (text.includes("<item>")) { console.error(`  ${handle}: ${inst} OK`); return text; }
+      console.error(`  ${handle}@${inst}: itemなし`);
     } catch (e) {
-      console.error(`  ${inst}: ${e.message}`);
+      console.error(`  ${handle}@${inst}: ${e.message}`);
     }
   }
-  throw new Error("全Nitterインスタンスからの取得に失敗しました");
+  console.error(`  ${handle}: 取得失敗（スキップ）`);
+  return null;
 }
 
 function decode(s) {
@@ -52,14 +64,12 @@ function decode(s) {
     .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
 }
 
-// nitter のリンクを本家 x.com に正規化（リンク切れ防止＆重複判定をインスタンス非依存にする）
+// nitter リンクを本家 x.com に正規化（リンク切れ防止＆重複判定をインスタンス非依存に）
 function toXLink(url) {
-  return url
-    .replace(/^https?:\/\/[^/]+\//, "https://x.com/")
-    .replace(/#m$/, "");
+  return url.replace(/^https?:\/\/[^/]+\//, "https://x.com/").replace(/#m$/, "");
 }
 
-function parse(xml) {
+function parse(xml, account, shop) {
   const items = [];
   for (const m of xml.matchAll(/<item>([\s\S]*?)<\/item>/g)) {
     const block = m[1];
@@ -68,12 +78,10 @@ function parse(xml) {
       return r ? decode(r[1]).trim() : "";
     };
     const link = toXLink(pick("link"));
-    items.push({
-      title: pick("title"),
-      link,
-      pubDate: pick("pubDate"),
-      guid: link,
-    });
+    const title = pick("title");
+    const lower = title.toLowerCase();
+    const hits = MATCH_ALL ? ["*"] : KEYWORDS.filter((k) => lower.includes(k.toLowerCase()));
+    items.push({ account, shop, title, link, pubDate: pick("pubDate"), guid: link, hits });
   }
   return items;
 }
@@ -82,7 +90,7 @@ async function notifyDiscord(matches) {
   const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url || !matches.length) return;
   const content = matches
-    .map((m) => `🎯 **入荷の可能性**\n${m.title.replace(/\s+/g, " ").slice(0, 150)}\n${m.link}`)
+    .map((m) => `🎯 **入荷の可能性**（${m.shop}）\n${m.title.replace(/\s+/g, " ").slice(0, 140)}\n${m.link}`)
     .join("\n\n")
     .slice(0, 1900);
   try {
@@ -105,43 +113,44 @@ function save(file, obj) {
   writeFileSync(file, JSON.stringify(obj, null, 2) + "\n");
 }
 
-const xml = await fetchRss();
-const items = parse(xml);
-console.error(`取得: ${items.length}件 / キーワード: ${KEYWORDS.join(", ")}`);
+// --- 全店取得 ---
+const all = [];
+for (const { handle, shop } of ACCOUNTS) {
+  const xml = await fetchRss(handle);
+  if (xml) all.push(...parse(xml, handle, shop));
+}
+all.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+console.error(
+  `合計 ${all.length}件 / ${ACCOUNTS.length}店 / ウォッチ語: ${MATCH_ALL ? "全件(*)" : KEYWORDS.join(", ")}`
+);
 
+// --- フィード（全店の最新。ヨッシー以外も含む）---
+save(FEED_FILE, all.slice(0, FEED_MAX));
+
+// --- ウォッチ・ヒット（履歴＆通知）---
 const seen = new Set(load(SEEN_FILE, []));
 const matchesStore = load(MATCH_FILE, []);
 const firstRun = seen.size === 0;
 
-const newMatches = [];
-for (const it of items) {
-  const lower = it.title.toLowerCase();
-  const hit = KEYWORDS.some((k) => lower.includes(k.toLowerCase()));
-  if (hit && !seen.has(it.guid)) newMatches.push(it);
-}
-// 評価済みとして全件を記録（次回以降の重複アラート防止）
-for (const it of items) seen.add(it.guid);
+const newHits = all.filter((it) => it.hits.length && !seen.has(it.guid));
+for (const it of all) seen.add(it.guid);
 
-if (newMatches.length) {
-  console.log(`🎯 新着ヒット ${newMatches.length}件${firstRun ? "（初回実行）" : ""}`);
-  for (const m of newMatches) {
-    console.log(`- [${m.pubDate}] ${m.title.replace(/\s+/g, " ").slice(0, 80)}`);
-    console.log(`  ${m.link}`);
-  }
-  matchesStore.unshift(...newMatches);
-  // 初回実行(seen空)は過去分のまとめ通知を避けてスキップ
-  if (!firstRun) await notifyDiscord(newMatches);
+if (newHits.length) {
+  console.log(`🎯 ウォッチ新着 ${newHits.length}件${firstRun ? "（初回・通知スキップ）" : ""}`);
+  for (const m of newHits) console.log(`- [${m.shop}] ${m.title.replace(/\s+/g, " ").slice(0, 70)}`);
+  matchesStore.unshift(...newHits);
+  if (!firstRun) await notifyDiscord(newHits);
 } else {
-  console.log("新着ヒットなし");
+  console.log("ウォッチ新着なし");
 }
 
 save(SEEN_FILE, [...seen]);
-save(MATCH_FILE, matchesStore);
+save(MATCH_FILE, matchesStore.slice(0, 200));
 save("data/status.json", {
   lastChecked: new Date().toISOString(),
-  account: ACCOUNT,
-  keywords: KEYWORDS,
-  fetched: items.length,
+  shops: ACCOUNTS.map((a) => a.shop),
+  keywords: MATCH_ALL ? ["*（全件・テスト）"] : KEYWORDS,
+  fetched: all.length,
+  feedCount: Math.min(all.length, FEED_MAX),
   totalMatches: matchesStore.length,
-  latestMatch: matchesStore[0]?.pubDate || null,
 });

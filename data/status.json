@@ -1,12 +1,17 @@
 {
-  "lastChecked": "2026-06-07T04:42:42.290Z",
-  "account": "Cplaviit",
+  "lastChecked": "2026-06-07T04:55:27.137Z",
+  "shops": [
+    "C-pla 津田沼ビート店",
+    "C-pla モリシア津田沼店",
+    "C-pla イオンタウン東習志野店",
+    "ガチャガチャの森【公式】"
+  ],
   "keywords": [
     "ヨッシー",
     "よっしー",
     "Yoshi"
   ],
-  "fetched": 20,
-  "totalMatches": 0,
-  "latestMatch": null
+  "fetched": 80,
+  "feedCount": 80,
+  "totalMatches": 0
 }

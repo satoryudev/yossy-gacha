@@ -3,92 +3,85 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ヨッシー ガチャ入荷ウォッチ</title>
+<title>ヨッシー ガチャ入荷ウォッチ｜津田沼</title>
 <style>
   :root {
-    --bg: #0f1419;
-    --card: #1a2029;
-    --line: #2a3340;
-    --text: #e7edf3;
-    --muted: #8b97a6;
-    --accent: #4ade80;
-    --accent-2: #38bdf8;
-    --warn: #fbbf24;
+    --bg: #0f1419; --card: #1a2029; --line: #2a3340;
+    --text: #e7edf3; --muted: #8b97a6; --accent: #4ade80; --accent-2: #38bdf8; --warn: #fbbf24;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.7;
-    -webkit-font-smoothing: antialiased;
+    background: var(--bg); color: var(--text); line-height: 1.7; -webkit-font-smoothing: antialiased;
   }
   .wrap { max-width: 680px; margin: 0 auto; padding: 0 16px 64px; }
   header {
     background: radial-gradient(120% 140% at 0% 0%, #1f3a2e 0%, #122031 55%, #0f1419 100%);
-    border-bottom: 1px solid var(--line);
-    padding: 28px 16px 24px;
+    border-bottom: 1px solid var(--line); padding: 26px 16px 22px;
   }
   .header-inner { max-width: 680px; margin: 0 auto; }
-  h1 { font-size: 1.45rem; letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
+  h1 { font-size: 1.4rem; letter-spacing: .02em; display: flex; align-items: center; gap: 10px; }
   h1 .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); animation: pulse 2s infinite; }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
-  .sub { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+  .sub { color: var(--muted); font-size: .88rem; margin-top: 6px; }
   .sub a { color: var(--accent-2); text-decoration: none; }
-  .sub a:hover { text-decoration: underline; }
 
-  .status {
-    display: flex; flex-wrap: wrap; gap: 8px;
-    margin: 18px 0 8px;
-  }
-  .chip {
-    background: var(--card); border: 1px solid var(--line);
-    border-radius: 999px; padding: 6px 13px; font-size: .82rem; color: var(--muted);
-  }
+  .status { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 6px; }
+  .chip { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 13px; font-size: .82rem; color: var(--muted); }
   .chip b { color: var(--text); font-weight: 600; }
   .chip.live b { color: var(--accent); }
-
-  .keywords { margin: 10px 0 22px; font-size: .85rem; color: var(--muted); }
+  .keywords { margin: 8px 0 16px; font-size: .84rem; color: var(--muted); }
   .kw { display:inline-block; background:#14202b; border:1px solid var(--line); color:var(--accent-2); border-radius:6px; padding:1px 8px; margin:0 4px 4px 0; }
 
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent);
-    border-radius: 12px; padding: 16px 16px 14px; margin-bottom: 14px;
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab {
+    flex: 1; text-align: center; padding: 10px; border-radius: 10px; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); color: var(--muted); font-size: .9rem; font-weight: 600;
+    user-select: none;
   }
-  .card .date { color: var(--muted); font-size: .8rem; margin-bottom: 8px; }
-  .card .body { white-space: pre-wrap; word-break: break-word; font-size: .96rem; }
-  .card a.open {
-    display: inline-block; margin-top: 12px; font-size: .85rem; font-weight: 600;
-    color: #0f1419; background: var(--accent); padding: 7px 14px; border-radius: 8px; text-decoration: none;
-  }
-  .card a.open:hover { filter: brightness(1.08); }
+  .tab.active { color: var(--text); border-color: var(--accent); background: #16241d; }
+  .tab .badge { display:inline-block; min-width:18px; padding:0 5px; margin-left:6px; border-radius:999px; background:var(--accent); color:#0f1419; font-size:.72rem; }
 
-  .empty {
-    text-align: center; padding: 56px 20px; color: var(--muted);
-    background: var(--card); border: 1px dashed var(--line); border-radius: 14px; margin-top: 8px;
-  }
+  .card { background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--line); border-radius: 12px; padding: 14px 16px 12px; margin-bottom: 14px; }
+  .card.hit { border-left-color: var(--accent); }
+  .card .meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom: 8px; }
+  .shop { font-size: .74rem; font-weight: 700; padding: 2px 9px; border-radius: 999px; border:1px solid transparent; }
+  .card .date { color: var(--muted); font-size: .78rem; }
+  .card .hitflag { font-size:.74rem; font-weight:700; color:#0f1419; background:var(--accent); padding:2px 8px; border-radius:999px; }
+  .card .body { white-space: pre-wrap; word-break: break-word; font-size: .95rem; }
+  .card a.open { display: inline-block; margin-top: 11px; font-size: .83rem; font-weight: 600; color: var(--accent-2); text-decoration: none; }
+  .card a.open:hover { text-decoration: underline; }
+
+  .empty { text-align: center; padding: 48px 20px; color: var(--muted); background: var(--card); border: 1px dashed var(--line); border-radius: 14px; }
   .empty .big { font-size: 2.4rem; margin-bottom: 12px; }
-  .empty p { margin: 4px 0; }
+  .empty button { margin-top:14px; background:var(--accent); color:#0f1419; border:0; border-radius:8px; padding:9px 16px; font-weight:700; cursor:pointer; }
 
-  footer { text-align: center; color: var(--muted); font-size: .78rem; margin-top: 36px; }
+  footer { text-align: center; color: var(--muted); font-size: .78rem; margin-top: 30px; }
   footer a { color: var(--accent-2); text-decoration: none; }
   .err { color: var(--warn); }
+  .hidden { display: none; }
 </style>
 </head>
 <body>
   <header>
     <div class="header-inner">
       <h1><span class="dot"></span>ヨッシー ガチャ入荷ウォッチ</h1>
-      <p class="sub">監視店舗：#C-pla 津田沼ビート店 <a href="https://x.com/Cplaviit" target="_blank" rel="noopener">@Cplaviit</a></p>
+      <p class="sub">津田沼・習志野のガチャ専門店を自動監視</p>
     </div>
   </header>
 
   <main class="wrap">
-    <div class="status" id="status">
-      <span class="chip">読み込み中…</span>
-    </div>
+    <div class="status" id="status"><span class="chip">読み込み中…</span></div>
     <div class="keywords" id="keywords"></div>
-    <div id="list"></div>
+
+    <div class="tabs">
+      <div class="tab active" id="tab-watch" onclick="show('watch')">🎯 ウォッチ<span class="badge hidden" id="watchBadge">0</span></div>
+      <div class="tab" id="tab-feed" onclick="show('feed')">🛍 全店の最新</div>
+    </div>
+
+    <div id="view-watch"></div>
+    <div id="view-feed" class="hidden"></div>
+
     <footer>
       10分おきに自動チェック（営業時間中）／ データは
       <a href="https://github.com/satoryudev/yossy-gacha" target="_blank" rel="noopener">GitHub</a> で公開
@@ -97,14 +90,17 @@
 
 <script>
 const bust = "?_=" + Date.now();
+const SHOP_COLORS = {
+  "C-pla 津田沼ビート店":        { c: "#4ade80", bg: "#16241d" },
+  "C-pla モリシア津田沼店":       { c: "#38bdf8", bg: "#13202b" },
+  "C-pla イオンタウン東習志野店": { c: "#c084fc", bg: "#1f1830" },
+  "ガチャガチャの森【公式】":     { c: "#fbbf24", bg: "#2a2110" },
+};
+const esc = (s) => (s || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
 const jst = (s) => {
   if (!s) return "—";
-  try {
-    return new Date(s).toLocaleString("ja-JP", {
-      timeZone: "Asia/Tokyo", month: "numeric", day: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    });
-  } catch { return s; }
+  try { return new Date(s).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }); }
+  catch { return s; }
 };
 const ago = (iso) => {
   if (!iso) return "";
@@ -114,49 +110,62 @@ const ago = (iso) => {
   if (sec < 86400) return Math.floor(sec / 3600) + "時間前";
   return Math.floor(sec / 86400) + "日前";
 };
-
 async function getJson(path, fallback) {
-  try {
-    const r = await fetch(path + bust, { cache: "no-store" });
-    if (!r.ok) throw new Error("HTTP " + r.status);
-    return await r.json();
-  } catch { return fallback; }
+  try { const r = await fetch(path + bust, { cache: "no-store" }); if (!r.ok) throw 0; return await r.json(); }
+  catch { return fallback; }
+}
+function shopBadge(shop) {
+  const s = SHOP_COLORS[shop] || { c: "#8b97a6", bg: "#1a2029" };
+  return `<span class="shop" style="color:${s.c};background:${s.bg};border-color:${s.c}55">${esc(shop)}</span>`;
+}
+function card(it) {
+  const hit = it.hits && it.hits.length;
+  return `<article class="card${hit ? " hit" : ""}">
+    <div class="meta">${shopBadge(it.shop)}<span class="date">🕒 ${jst(it.pubDate)}</span>${hit ? '<span class="hitflag">🎯 ヒット</span>' : ""}</div>
+    <div class="body">${esc(it.title)}</div>
+    <a class="open" href="${it.link}" target="_blank" rel="noopener">Xで見る →</a>
+  </article>`;
+}
+function show(which) {
+  document.getElementById("view-watch").classList.toggle("hidden", which !== "watch");
+  document.getElementById("view-feed").classList.toggle("hidden", which !== "feed");
+  document.getElementById("tab-watch").classList.toggle("active", which === "watch");
+  document.getElementById("tab-feed").classList.toggle("active", which === "feed");
 }
 
 (async () => {
-  const [status, matches] = await Promise.all([
+  const [status, feed, matches] = await Promise.all([
     getJson("./data/status.json", null),
+    getJson("./data/feed.json", []),
     getJson("./data/matches.json", []),
   ]);
 
   const statusEl = document.getElementById("status");
   if (status) {
-    statusEl.innerHTML = `
-      <span class="chip live">状況 <b>${matches.length ? "入荷情報あり" : "監視中"}</b></span>
-      <span class="chip">最終チェック <b>${ago(status.lastChecked)}</b>（${jst(status.lastChecked)}）</span>
-      <span class="chip">直近取得 <b>${status.fetched ?? "—"}</b>件</span>`;
+    statusEl.innerHTML =
+      `<span class="chip live">状況 <b>${matches.length ? "入荷ヒットあり" : "監視中"}</b></span>` +
+      `<span class="chip">最終チェック <b>${ago(status.lastChecked)}</b></span>` +
+      `<span class="chip">監視 <b>${(status.shops || []).length}</b>店</span>` +
+      `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>`;
     document.getElementById("keywords").innerHTML =
-      "監視キーワード：" + (status.keywords || []).map((k) => `<span class="kw">${k}</span>`).join("");
+      "ウォッチ語：" + (status.keywords || []).map((k) => `<span class="kw">${esc(k)}</span>`).join("");
   } else {
     statusEl.innerHTML = `<span class="chip err">状況データを読み込めませんでした</span>`;
   }
 
-  const list = document.getElementById("list");
-  if (!matches.length) {
-    list.innerHTML = `
-      <div class="empty">
-        <div class="big">🥚</div>
-        <p>まだヨッシーの入荷情報はありません。</p>
-        <p>入荷ポストを検知すると、ここに自動で表示されます。</p>
-      </div>`;
-    return;
-  }
-  list.innerHTML = matches.map((m) => `
-    <article class="card">
-      <div class="date">🕒 ${jst(m.pubDate)}</div>
-      <div class="body">${(m.title || "").replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</div>
-      <a class="open" href="${m.link}" target="_blank" rel="noopener">Xで見る →</a>
-    </article>`).join("");
+  const wb = document.getElementById("watchBadge");
+  if (matches.length) { wb.textContent = matches.length; wb.classList.remove("hidden"); }
+
+  document.getElementById("view-watch").innerHTML = matches.length
+    ? matches.map(card).join("")
+    : `<div class="empty"><div class="big">🥚</div>
+        <p>まだウォッチ語（ヨッシー等）のヒットはありません。</p>
+        <p>入荷ポストを検知するとここに表示＆Discord通知されます。</p>
+        <button onclick="show('feed')">🛍 全店の最新を見る</button></div>`;
+
+  document.getElementById("view-feed").innerHTML = feed.length
+    ? feed.map(card).join("")
+    : `<div class="empty"><div class="big">📭</div><p>フィードを取得できませんでした。</p></div>`;
 })();
 </script>
 </body>
