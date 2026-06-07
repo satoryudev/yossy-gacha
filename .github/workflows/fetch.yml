@@ -29,6 +29,8 @@ jobs:
         env:
           ACCOUNT: Cplaviit
           KEYWORDS: "ヨッシー,よっしー,Yoshi"
+          # Discord通知用（リポジトリのSecretsに登録。未設定なら通知はスキップ）
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
       - name: Commit data if changed
         run: |

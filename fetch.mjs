@@ -78,6 +78,25 @@ function parse(xml) {
   return items;
 }
 
+async function notifyDiscord(matches) {
+  const url = process.env.DISCORD_WEBHOOK_URL;
+  if (!url || !matches.length) return;
+  const content = matches
+    .map((m) => `🎯 **入荷の可能性**\n${m.title.replace(/\s+/g, " ").slice(0, 150)}\n${m.link}`)
+    .join("\n\n")
+    .slice(0, 1900);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+    console.error(`Discord通知: HTTP ${res.status}`);
+  } catch (e) {
+    console.error(`Discord通知失敗: ${e.message}`);
+  }
+}
+
 function load(file, fallback) {
   try { return JSON.parse(readFileSync(file, "utf8")); } catch { return fallback; }
 }
@@ -110,9 +129,19 @@ if (newMatches.length) {
     console.log(`  ${m.link}`);
   }
   matchesStore.unshift(...newMatches);
+  // 初回実行(seen空)は過去分のまとめ通知を避けてスキップ
+  if (!firstRun) await notifyDiscord(newMatches);
 } else {
   console.log("新着ヒットなし");
 }
 
 save(SEEN_FILE, [...seen]);
 save(MATCH_FILE, matchesStore);
+save("data/status.json", {
+  lastChecked: new Date().toISOString(),
+  account: ACCOUNT,
+  keywords: KEYWORDS,
+  fetched: items.length,
+  totalMatches: matchesStore.length,
+  latestMatch: matchesStore[0]?.pubDate || null,
+});
