@@ -442,7 +442,10 @@
       "https://pbs.twimg.com/media/HKBPc5VbgAAzFc0.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.046
+    }
   },
   {
     "account": "Cplaviit",
@@ -455,7 +458,10 @@
       "https://pbs.twimg.com/media/HKBFu9PbQAA4FxC.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.002
+    }
   },
   {
     "account": "Cplaviit",
@@ -469,7 +475,10 @@
       "https://pbs.twimg.com/media/HKA6w8BaIAAMuvy.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.016
+    }
   },
   {
     "account": "gachanomori",
@@ -497,7 +506,10 @@
       "https://pbs.twimg.com/media/HJ8LcGjbIAAFcEd.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.003
+    }
   },
   {
     "account": "cpla_narashino",
@@ -510,7 +522,10 @@
       "https://pbs.twimg.com/media/HJ8LT8Qa4AAZCyu.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.006
+    }
   },
   {
     "account": "gachanomori",
@@ -536,7 +551,10 @@
       "https://pbs.twimg.com/media/HJ4xxQxbcAAT5yM.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.017
+    }
   },
   {
     "account": "cpla_narashino",
@@ -549,7 +567,10 @@
       "https://pbs.twimg.com/media/HJ4r9qFa8AANJio.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.006
+    }
   },
   {
     "account": "cpla_narashino",
@@ -563,7 +584,10 @@
       "https://pbs.twimg.com/media/HJ4halRbkAAYhI7.jpg"
     ],
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   },
   {
     "account": "cpla_narashino",
