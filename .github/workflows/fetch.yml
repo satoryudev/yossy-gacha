@@ -1,0 +1,43 @@
+name: gacha-restock-fetch
+
+on:
+  schedule:
+    # UTC 1:00-11:00 = JST 10:00-20:50（営業時間）に10分おき
+    # 注: GitHub の cron は混雑時に数分〜十数分遅延することがあります
+    - cron: "*/10 1-11 * * *"
+  workflow_dispatch: {} # 手動実行（テスト用）
+
+permissions:
+  contents: write # data/ をコミットして戻すため
+
+concurrency:
+  group: gacha-fetch
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Fetch RSS & detect restocks
+        run: node fetch.mjs
+        env:
+          ACCOUNT: Cplaviit
+          KEYWORDS: "ヨッシー,よっしー,Yoshi"
+
+      - name: Commit data if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/
+          if git diff --staged --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "data: update restock feed ($(date -u +%Y-%m-%dT%H:%MZ))"
+            git push
+          fi
