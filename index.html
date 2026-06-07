@@ -114,6 +114,25 @@
   .empty button { margin-top:18px; background:linear-gradient(160deg,#4ad06a,#2b9440); color:#fff; border:0; border-radius:999px; padding:11px 20px; font-weight:800; font-family:var(--body); cursor:pointer; box-shadow:0 8px 16px -7px rgba(43,148,64,.9); }
   .empty button:hover { filter: brightness(1.06); }
 
+  /* ヨッシー入荷中バナー（入荷〜完売まで強調） */
+  .yoshialert {
+    display:flex; align-items:center; gap:14px; margin:18px 0 10px;
+    background: linear-gradient(120deg,#ffe66d 0%,#4ad06a 55%,#2b9440 100%);
+    color:#143620; border-radius:22px; padding:16px 18px; position:relative; overflow:hidden;
+    box-shadow:0 14px 30px -10px rgba(43,148,64,.75);
+    animation: alertPop .5s cubic-bezier(.2,1.4,.4,1) both, alertGlow 2.2s ease-in-out .5s infinite;
+  }
+  @keyframes alertPop { from{opacity:0; transform:scale(.92) translateY(-8px)} to{opacity:1; transform:none} }
+  @keyframes alertGlow { 0%,100%{box-shadow:0 14px 30px -10px rgba(43,148,64,.75)} 50%{box-shadow:0 14px 40px -6px rgba(255,212,59,.95)} }
+  .yoshialert::after { content:""; position:absolute; top:0; left:-45%; width:32%; height:100%; transform:skewX(-18deg); background:linear-gradient(100deg,transparent,rgba(255,255,255,.65),transparent); animation: sweep 2.8s ease-in-out infinite; }
+  @keyframes sweep { 0%{left:-45%} 55%,100%{left:135%} }
+  .yoshialert .ya-emoji { font-size:2.1rem; animation: bob 1.5s ease-in-out infinite; z-index:1; }
+  .yoshialert .ya-text { flex:1; line-height:1.35; z-index:1; }
+  .yoshialert .ya-text b { font-family:var(--disp); font-size:1.18rem; display:block; }
+  .yoshialert .ya-text span { font-size:.84rem; font-weight:700; opacity:.85; }
+  .yoshialert a { z-index:1; background:#143620; color:#fff; text-decoration:none; font-weight:800; font-size:.82rem; padding:9px 15px; border-radius:999px; white-space:nowrap; }
+  .yoshialert a:hover { background:#0e2817; }
+
   footer { text-align: center; color: var(--muted); font-size: .77rem; margin-top: 32px; font-weight:500; }
   footer a { color: var(--yoshi-d); text-decoration: none; font-weight:700; }
   .err { color: #e8590c; }
@@ -130,6 +149,7 @@
   </header>
 
   <main class="wrap">
+    <div id="yoshiAlert" class="yoshialert hidden"></div>
     <div class="status" id="status"><span class="chip">読み込み中…</span></div>
     <div class="keywords" id="keywords"></div>
 
@@ -220,10 +240,22 @@ function show(which) {
     getJson("./data/matches.json", []),
   ]);
 
+  const ya = document.getElementById("yoshiAlert");
+  if (status?.yoshi?.inStock) {
+    const shops = (status.yoshi.shops || []).join(" / ");
+    ya.innerHTML =
+      `<div class="ya-emoji">🎉</div>` +
+      `<div class="ya-text"><b>ヨッシー入荷中！</b><span>${esc(shops)}${status.yoshi.since ? " ・ " + ago(status.yoshi.since) : ""}</span></div>` +
+      (status.yoshi.link ? `<a href="${status.yoshi.link}" target="_blank" rel="noopener">Xで見る →</a>` : "");
+    ya.classList.remove("hidden");
+  } else {
+    ya.classList.add("hidden");
+  }
+
   const statusEl = document.getElementById("status");
   if (status) {
     statusEl.innerHTML =
-      `<span class="chip alive">状況 <b>${matches.length ? "入荷ヒットあり🎉" : "監視中"}</b></span>` +
+      `<span class="chip alive">状況 <b>${status.yoshi?.inStock ? "🎉ヨッシー入荷中" : (matches.length ? "ヨッシー情報あり" : "監視中")}</b></span>` +
       `<span class="chip">最終チェック <b>${ago(status.lastChecked)}</b></span>` +
       `<span class="chip">監視 <b>${(status.shops || []).length}</b>店</span>` +
       `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>` +

@@ -155,6 +155,39 @@ async function notifyDiscord(hits) {
 
 const isHit = (it) => it.textHits.length > 0 || (it.vision && it.vision.yoshi);
 
+// ヨッシー投稿を「入荷／完売／その他」に分類（完売を優先、入荷予定は除外）
+const SOLDOUT_RE = /完売|品切れ|売り切れ|売切|販売終了/;
+const INSTOCK_RE = /入荷|再入荷|入荷しました|入荷中|販売中/;
+function stockType(title) {
+  if (SOLDOUT_RE.test(title)) return "soldout";
+  if (/予定/.test(title)) return "info"; // 入荷予定表など（まだ在庫ではない）
+  if (INSTOCK_RE.test(title)) return "instock";
+  return "info";
+}
+// 直近フィードから「現在ヨッシー在庫中か」を店舗ごとに判定
+function computeYoshiStock(items) {
+  const byShop = {};
+  for (const it of items) {
+    if (!isHit(it)) continue;
+    const type = stockType(it.title);
+    if (type === "info") continue;
+    const t = new Date(it.pubDate).getTime() || 0;
+    const s = (byShop[it.shop] ||= { instock: 0, soldout: 0, ref: null });
+    if (type === "instock" && t > s.instock) { s.instock = t; s.ref = it; }
+    if (type === "soldout" && t > s.soldout) { s.soldout = t; }
+  }
+  // 最新の入荷が、その後の完売より新しければ「在庫中」
+  const live = Object.entries(byShop)
+    .filter(([, s]) => s.instock > 0 && s.instock >= s.soldout)
+    .map(([shop, s]) => ({ shop, since: s.ref?.pubDate || null, link: s.ref?.link || null }));
+  return {
+    inStock: live.length > 0,
+    shops: live.map((x) => x.shop),
+    since: live.map((x) => x.since).filter(Boolean).sort().slice(-1)[0] || null,
+    link: live[0]?.link || null,
+  };
+}
+
 // --- 全店取得 ---
 const all = [];
 for (const { handle, shop } of ACCOUNTS) {
@@ -203,6 +236,8 @@ if (newHits.length) {
 save(NOTIFIED_FILE, [...notified].slice(-500));
 save(MATCH_FILE, matchesStore.slice(0, 200));
 save(ANALYZED_FILE, Object.fromEntries(Object.entries(analyzed).slice(-300)));
+const yoshi = computeYoshiStock(all);
+console.error(`ヨッシー在庫: ${yoshi.inStock ? "在庫中 @ " + yoshi.shops.join(", ") : "なし"}`);
 save("data/status.json", {
   lastChecked: new Date().toISOString(),
   shops: ACCOUNTS.map((a) => a.shop),
@@ -211,4 +246,5 @@ save("data/status.json", {
   fetched: all.length,
   feedCount: Math.min(all.length, FEED_MAX),
   totalMatches: matchesStore.length,
+  yoshi,
 });
