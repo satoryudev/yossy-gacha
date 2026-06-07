@@ -122,8 +122,8 @@ function shopBadge(shop) {
 }
 function card(it) {
   const hit = (it.textHits && it.textHits.length) || (it.vision && it.vision.yoshi);
-  const detected = it.vision && it.vision.yoshi && it.vision.products && it.vision.products.length
-    ? `<div class="detected">🔎 AI検出: ${it.vision.products.slice(0, 4).map(esc).join(" / ")}</div>` : "";
+  const detected = it.vision && it.vision.yoshi
+    ? `<div class="detected">🔎 AI画像判定: ヨッシーの可能性 (${Math.round((it.vision.score || 0) * 100)}%)</div>` : "";
   const img = it.images && it.images[0]
     ? `<img class="thumb" src="${it.images[0]}" loading="lazy" alt="商品画像">` : "";
   return `<article class="card${hit ? " hit" : ""}">
@@ -154,7 +154,7 @@ function show(which) {
       `<span class="chip">最終チェック <b>${ago(status.lastChecked)}</b></span>` +
       `<span class="chip">監視 <b>${(status.shops || []).length}</b>店</span>` +
       `<span class="chip">取得 <b>${status.fetched ?? "—"}</b>件</span>` +
-      `<span class="chip">AI画像判定 <b>${status.visionEnabled ? "ON" : "OFF"}</b></span>`;
+      `<span class="chip">AI画像判定 <b>${(status.visionMethod || "OFF").replace(/[（(].*$/, "")}</b></span>`;
     document.getElementById("keywords").innerHTML =
       "ウォッチ語：" + (status.keywords || []).map((k) => `<span class="kw">${esc(k)}</span>`).join("");
   } else {

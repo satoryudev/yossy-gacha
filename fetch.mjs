@@ -2,12 +2,13 @@
 // 津田沼近辺の複数ガチャ店のXポストを Nitter RSS で取得する。
 // - data/feed.json    : 全店の最新ポスト（画像URL・AI判定つき）
 // - data/matches.json : ヨッシー・ヒットの履歴（通知対象）
-// - data/analyzed.json: 画像のGemini判定キャッシュ（再解析・再課金を防ぐ）
-// ヨッシー判定は「本文キーワード」＋「画像をGemini Visionで判定」の二段。
-// GEMINI_API_KEY 未設定なら画像判定はスキップしテキストのみで動く。
+// - data/analyzed.json: 画像のAI判定キャッシュ（同じ画像を再解析しない）
+// ヨッシー判定は「本文キーワード」＋「画像をCLIPゼロショット分類」の二段。
+// CLIP(@xenova/transformers)はローカル実行＝完全無料・APIキー不要。
 
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
-import { dirname } from "node:path";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
 
 const ACCOUNTS = [
   { handle: "Cplaviit",       shop: "C-pla 津田沼ビート店" },
@@ -23,10 +24,13 @@ const INSTANCES = (process.env.NITTER_INSTANCES ||
   "nitter.net,nitter.poast.org,nitter.privacydev.net,lightbrd.com")
   .split(",").map((s) => s.trim()).filter(Boolean);
 
-// 画像をGeminiに投げる候補：本文がこの語を含み、画像があり、未解析のもの
-const PRODUCT_HINT = /入荷|再入荷|入荷予定|予定表|完売|商品|登場|発売/;
-const VISION_MAX = Number(process.env.VISION_MAX || 6); // 1回の実行で解析する最大画像数
-const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+// 画像をAI判定する候補：本文がこの語を含み、画像があり、未解析のもの
+const PRODUCT_HINT = /入荷|再入荷|入荷予定|予定表|完売|商品|登場|発売|マリオ|ヨッシー/;
+const VISION_MAX = Number(process.env.VISION_MAX || 8); // 1回の実行で解析する最大画像数
+const YOSHI_THRESHOLD = Number(process.env.YOSHI_THRESHOLD || 0.4);
+const CLIP_MODEL = "Xenova/clip-vit-base-patch32";
+const LABEL_YOSHI = "Yoshi, the green dinosaur character from Nintendo Super Mario";
+const LABEL_OTHER = "some other video game or anime character goods, not Yoshi";
 
 const FEED_MAX = 80;
 const NOTIFIED_FILE = "data/notified.json";
@@ -34,9 +38,9 @@ const MATCH_FILE = "data/matches.json";
 const FEED_FILE = "data/feed.json";
 const ANALYZED_FILE = "data/analyzed.json";
 
-const BROWSER_HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
+const RSS_HEADERS = {
+  "User-Agent": UA,
   Accept: "application/rss+xml,text/xml;q=0.9,*/*;q=0.8",
   "Accept-Language": "ja,en;q=0.8",
   "Accept-Encoding": "identity", // undici 既定の br/gzip だと nitter が空ボディを返すため
@@ -45,10 +49,7 @@ const BROWSER_HEADERS = {
 async function fetchRss(handle) {
   for (const inst of INSTANCES) {
     try {
-      const res = await fetch(`https://${inst}/${handle}/rss`, {
-        headers: BROWSER_HEADERS,
-        signal: AbortSignal.timeout(20000),
-      });
+      const res = await fetch(`https://${inst}/${handle}/rss`, { headers: RSS_HEADERS, signal: AbortSignal.timeout(20000) });
       if (!res.ok) { console.error(`  ${handle}@${inst}: HTTP ${res.status}`); continue; }
       const text = await res.text();
       if (text.includes("<item>")) { console.error(`  ${handle}: ${inst} OK`); return text; }
@@ -103,42 +104,32 @@ function parse(xml, account, shop) {
   return items;
 }
 
-// 画像1枚を Gemini Vision に投げて {yoshi, products} を得る
+// --- CLIP(ゼロショット画像分類) ---
+let _clf = null;
+async function getClassifier() {
+  if (_clf) return _clf;
+  const { pipeline, env } = await import("@xenova/transformers");
+  env.cacheDir = process.env.TRANSFORMERS_CACHE || "./.tfcache";
+  _clf = await pipeline("zero-shot-image-classification", CLIP_MODEL);
+  return _clf;
+}
 async function analyzeImage(imageUrl) {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) return null;
-  let b64, mime = "image/jpeg";
+  let tmp;
   try {
-    const ir = await fetch(imageUrl, { headers: { "User-Agent": BROWSER_HEADERS["User-Agent"] }, signal: AbortSignal.timeout(20000) });
+    const ir = await fetch(imageUrl, { headers: { "User-Agent": UA }, signal: AbortSignal.timeout(20000) });
     if (!ir.ok) { console.error(`    画像DL HTTP ${ir.status}`); return null; }
-    mime = (ir.headers.get("content-type") || "image/jpeg").split(";")[0];
-    b64 = Buffer.from(await ir.arrayBuffer()).toString("base64");
-  } catch (e) { console.error(`    画像DL失敗: ${e.message}`); return null; }
-
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${key}`;
-  const body = {
-    contents: [{ parts: [
-      { text: "これはガチャガチャ(カプセルトイ)の商品画像です。任天堂のキャラクター『ヨッシー』(緑の恐竜)のガチャ・フィギュア・グッズが写っているか判定してください。画像内のロゴや商品名テキストも読み取って判断材料にしてください。" },
-      { inline_data: { mime_type: mime, data: b64 } },
-    ] }],
-    generationConfig: {
-      temperature: 0,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: "OBJECT",
-        properties: { yoshi: { type: "BOOLEAN" }, products: { type: "ARRAY", items: { type: "STRING" } } },
-        required: ["yoshi", "products"],
-      },
-    },
-  };
-  try {
-    const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: AbortSignal.timeout(40000) });
-    if (!r.ok) { console.error(`    Gemini HTTP ${r.status}: ${(await r.text()).slice(0, 160)}`); return null; }
-    const j = await r.json();
-    const txt = j.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
-    const p = JSON.parse(txt);
-    return { yoshi: !!p.yoshi, products: Array.isArray(p.products) ? p.products : [] };
-  } catch (e) { console.error(`    Gemini失敗: ${e.message}`); return null; }
+    tmp = join(tmpdir(), "yg_" + Math.random().toString(36).slice(2) + ".img");
+    writeFileSync(tmp, Buffer.from(await ir.arrayBuffer()));
+    const clf = await getClassifier();
+    const out = await clf(tmp, [LABEL_YOSHI, LABEL_OTHER]);
+    const score = out.find((o) => o.label === LABEL_YOSHI)?.score ?? 0;
+    return { yoshi: score >= YOSHI_THRESHOLD, score: Math.round(score * 1000) / 1000 };
+  } catch (e) {
+    console.error(`    画像判定失敗: ${e.message}`);
+    return null;
+  } finally {
+    if (tmp) try { unlinkSync(tmp); } catch {}
+  }
 }
 
 function load(file, fallback) {
@@ -153,9 +144,7 @@ async function notifyDiscord(hits) {
   const url = process.env.DISCORD_WEBHOOK_URL;
   if (!url || !hits.length) return;
   const content = hits.map((m) => {
-    const why = m.vision?.yoshi
-      ? `🖼 画像判定: ${(m.vision.products || []).slice(0, 3).join(", ") || "ヨッシー"}`
-      : "📝 本文ヒット";
+    const why = m.vision?.yoshi ? `🖼 画像判定 ${Math.round(m.vision.score * 100)}%` : "📝 本文ヒット";
     return `🎯 **ヨッシーの可能性**（${m.shop} / ${why}）\n${m.title.replace(/\s+/g, " ").slice(0, 120)}\n${m.link}`;
   }).join("\n\n").slice(0, 1900);
   try {
@@ -175,24 +164,19 @@ for (const { handle, shop } of ACCOUNTS) {
 all.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
 console.error(`合計 ${all.length}件 / ${ACCOUNTS.length}店`);
 
-// --- 画像のGemini判定（候補のみ・キャッシュ利用）---
+// --- 画像のCLIP判定（候補のみ・キャッシュ利用）---
 const analyzed = load(ANALYZED_FILE, {});
-if (process.env.GEMINI_API_KEY) {
-  const candidates = all.filter(
-    (it) => it.images.length && PRODUCT_HINT.test(it.title) && !it.textHits.length && !(it.guid in analyzed)
-  );
-  console.error(`画像判定候補: ${candidates.length}件（今回最大${VISION_MAX}件解析）`);
-  for (const it of candidates.slice(0, VISION_MAX)) {
-    const res = await analyzeImage(it.images[0]);
-    if (res) {
-      analyzed[it.guid] = res;
-      console.error(`    ${it.shop}: yoshi=${res.yoshi} ${res.products.slice(0, 2).join("/")}`);
-    }
+const candidates = all.filter(
+  (it) => it.images.length && PRODUCT_HINT.test(it.title) && !it.textHits.length && !(it.guid in analyzed)
+);
+console.error(`画像判定候補: ${candidates.length}件（今回最大${VISION_MAX}件解析）`);
+for (const it of candidates.slice(0, VISION_MAX)) {
+  const res = await analyzeImage(it.images[0]);
+  if (res) {
+    analyzed[it.guid] = res;
+    console.error(`    ${it.shop}: yoshi=${res.yoshi} (${Math.round(res.score * 100)}%)`);
   }
-} else {
-  console.error("GEMINI_API_KEY 未設定 → 画像判定スキップ（本文キーワードのみ）");
 }
-// キャッシュ済み判定を各itemに反映
 for (const it of all) if (analyzed[it.guid]) it.vision = analyzed[it.guid];
 
 // --- フィード（全店の最新）---
@@ -218,13 +202,12 @@ if (newHits.length) {
 
 save(NOTIFIED_FILE, [...notified].slice(-500));
 save(MATCH_FILE, matchesStore.slice(0, 200));
-// analyzed は直近300件に剪定
 save(ANALYZED_FILE, Object.fromEntries(Object.entries(analyzed).slice(-300)));
 save("data/status.json", {
   lastChecked: new Date().toISOString(),
   shops: ACCOUNTS.map((a) => a.shop),
   keywords: KEYWORDS,
-  visionEnabled: !!process.env.GEMINI_API_KEY,
+  visionMethod: "CLIP(無料・ローカル)",
   fetched: all.length,
   feedCount: Math.min(all.length, FEED_MAX),
   totalMatches: matchesStore.length,
