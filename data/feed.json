@@ -120,7 +120,10 @@
     "guid": "https://x.com/Cplaviit/status/2064559999582638262",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "cpla_narashino",
@@ -131,7 +134,10 @@
     "guid": "https://x.com/cpla_narashino/status/2064528690663555439",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.031
+    }
   },
   {
     "account": "cpla_narashino",
@@ -142,7 +148,10 @@
     "guid": "https://x.com/cpla_narashino/status/2064514233132519628",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.031
+    }
   },
   {
     "account": "cpla_narashino",
@@ -153,7 +162,10 @@
     "guid": "https://x.com/cpla_narashino/status/2064514190866550832",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.116
+    }
   },
   {
     "account": "cpla_narashino",
@@ -164,7 +176,10 @@
     "guid": "https://x.com/cpla_narashino/status/2064514154917155000",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.011
+    }
   },
   {
     "account": "Cplaviit",
