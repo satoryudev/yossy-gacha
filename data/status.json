@@ -1,5 +1,5 @@
 {
-  "lastChecked": "2026-06-10T05:22:58.965Z",
+  "lastChecked": "2026-06-10T09:05:11.639Z",
   "shops": [
     "C-pla 津田沼ビート店",
     "C-pla モリシア津田沼店",
@@ -12,13 +12,15 @@
     "Yoshi"
   ],
   "visionMethod": "CLIP(無料・ローカル)",
-  "fetched": 0,
-  "feedCount": 0,
+  "fetched": 80,
+  "feedCount": 80,
   "totalMatches": 1,
   "yoshi": {
-    "inStock": false,
-    "shops": [],
-    "since": null,
-    "link": null
+    "inStock": true,
+    "shops": [
+      "C-pla イオンタウン東習志野店"
+    ],
+    "since": "Tue, 09 Jun 2026 06:30:40 GMT",
+    "link": "https://x.com/cpla_narashino/status/2064233702692106472"
   }
 }
