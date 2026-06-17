@@ -456,7 +456,10 @@
     "guid": "https://x.com/Cplaviit/status/2066739207859806383",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.006
+    }
   },
   {
     "account": "cpla_narashino",
