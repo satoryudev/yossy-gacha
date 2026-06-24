@@ -232,7 +232,10 @@
     "guid": "https://x.com/cpla_narashino/status/2069649160190779665",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.009
+    }
   },
   {
     "account": "Cplaviit",
