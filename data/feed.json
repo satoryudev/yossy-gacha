@@ -232,7 +232,10 @@
     "guid": "https://x.com/Cplaviit/status/2070379998478000163",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   },
   {
     "account": "Cplaviit",
