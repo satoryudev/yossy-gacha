@@ -1,20 +1,4 @@
 {
-  "https://x.com/Cplaviit/status/2062053544279335283": {
-    "yoshi": false,
-    "score": 0
-  },
-  "https://x.com/Cplaviit/status/2062026293198323756": {
-    "yoshi": false,
-    "score": 0.008
-  },
-  "https://x.com/Cplaviit/status/2061700290659938318": {
-    "yoshi": false,
-    "score": 0.004
-  },
-  "https://x.com/gachanomori/status/2060154937406033925": {
-    "yoshi": false,
-    "score": 0.018
-  },
   "https://x.com/gachanomori/status/2057622466063954325": {
     "yoshi": false,
     "score": 0.023
@@ -1198,5 +1182,21 @@
   "https://x.com/cpla_narashino/status/2070682806339113182": {
     "yoshi": true,
     "score": 0.878
+  },
+  "https://x.com/cpla_narashino/status/2070765091667259761": {
+    "yoshi": false,
+    "score": 0.018
+  },
+  "https://x.com/Cplaviit/status/2070740712745009609": {
+    "yoshi": false,
+    "score": 0.009
+  },
+  "https://x.com/Cplaviit/status/2070737283662368791": {
+    "yoshi": false,
+    "score": 0.001
+  },
+  "https://x.com/Cplaviit/status/2070733385312645196": {
+    "yoshi": false,
+    "score": 0.008
   }
 }
