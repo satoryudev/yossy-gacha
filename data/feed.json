@@ -939,7 +939,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901871668634456509",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.146
+    }
   },
   {
     "account": "Cpla62114446",
@@ -950,7 +953,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901835305982017688",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.025
+    }
   },
   {
     "account": "Cpla62114446",
@@ -961,7 +967,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901187633038180715",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.06
+    }
   },
   {
     "account": "Cpla62114446",
@@ -972,7 +981,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901172693942387178",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.06
+    }
   },
   {
     "account": "Cpla62114446",
@@ -983,7 +995,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901172563931521195",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   },
   {
     "account": "Cpla62114446",
@@ -994,7 +1009,10 @@
     "guid": "https://x.com/Cpla62114446/status/1901172519463272937",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.209
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1005,7 +1023,10 @@
     "guid": "https://x.com/Cpla62114446/status/1900380110798413934",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.004
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1016,7 +1037,10 @@
     "guid": "https://x.com/Cpla62114446/status/1900134031510978883",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1027,10 +1051,7 @@
     "guid": "https://x.com/Cpla62114446/status/1900119576094138554",
     "hasImage": true,
     "textHits": [],
-    "vision": {
-      "yoshi": false,
-      "score": 0.002
-    }
+    "vision": null
   },
   {
     "account": "Cpla62114446",
@@ -1041,9 +1062,6 @@
     "guid": "https://x.com/Cpla62114446/status/1899709688985641347",
     "hasImage": true,
     "textHits": [],
-    "vision": {
-      "yoshi": false,
-      "score": 0
-    }
+    "vision": null
   }
 ]
