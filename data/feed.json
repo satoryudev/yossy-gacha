@@ -2,6 +2,20 @@
   {
     "account": "Cplaviit",
     "shop": "C-pla 津田沼ビート店",
+    "title": "＼🏰スタッフおすすめ商品🏰／ 📎 Disney MINIATURE & PACKAGE COLLECTION 2 オールドテイストでとても可愛いです♡ 本日も皆様のご来店お待ちしております✨ #シープラ #カプセルトイ",
+    "link": "https://x.com/Cplaviit/status/2071457524776329483",
+    "pubDate": "Mon, 29 Jun 2026 04:55:34 GMT",
+    "guid": "https://x.com/Cplaviit/status/2071457524776329483",
+    "hasImage": true,
+    "textHits": [],
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
+  },
+  {
+    "account": "Cplaviit",
+    "shop": "C-pla 津田沼ビート店",
     "title": "＼📌完売情報📌／ ✎︎＿＿＿＿＿＿＿＿＿＿＿＿ こちらの商品は完売いたしました‼️ たくさんのご来店ありがとうございました🌟 次回入荷は未定となっております(՞_ ̫ _՞)゛ ✎︎＿＿＿＿＿＿＿＿＿＿＿＿ #カプセルトイ #シープラ",
     "link": "https://x.com/Cplaviit/status/2071170955066634726",
     "pubDate": "Sun, 28 Jun 2026 09:56:50 GMT",
@@ -545,20 +559,6 @@
     }
   },
   {
-    "account": "Cplaviit",
-    "shop": "C-pla 津田沼ビート店",
-    "title": "＼📌完売情報📌／ ✎︎＿＿＿＿＿＿＿＿＿＿＿＿ こちらの商品は完売いたしました‼️ たくさんのご来店ありがとうございました🌟 次回入荷は未定となっております(՞_ ̫ _՞)゛ ✎︎＿＿＿＿＿＿＿＿＿＿＿＿ #カプセルトイ #シープラ",
-    "link": "https://x.com/Cplaviit/status/2070022216583139423",
-    "pubDate": "Thu, 25 Jun 2026 05:52:10 GMT",
-    "guid": "https://x.com/Cplaviit/status/2070022216583139423",
-    "hasImage": true,
-    "textHits": [],
-    "vision": {
-      "yoshi": false,
-      "score": 0.004
-    }
-  },
-  {
     "account": "gachanomori",
     "shop": "ガチャガチャの森【公式】",
     "title": "🎉オープンのお知らせ🎉 ㊗️本日、大阪府豊中市にあります 『せんちゅうパル』の3階に ガチャガチャの森がオープン！！🧸🎊 店内にはカプセルトイマシンを 約370台ご用意しております🌳🌳🌟 北大阪急行 千里中央駅すぐの ショッピングセンター内にあるので アクセス抜群❣️お買い物の際には ぜひお立ち寄りください🛍️ ~ ♪ いよいよ10時からオープン！ 皆様のご来店お待ちしております🫶  #カプセルトイ #ガチャガチャの森 #せんちゅうパル",
@@ -1051,7 +1051,10 @@
     "guid": "https://x.com/Cpla62114446/status/1900119576094138554",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.002
+    }
   },
   {
     "account": "Cpla62114446",
@@ -1062,6 +1065,9 @@
     "guid": "https://x.com/Cpla62114446/status/1899709688985641347",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0
+    }
   }
 ]
