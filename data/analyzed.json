@@ -1,20 +1,4 @@
 {
-  "https://x.com/Cplaviit/status/2064287271508140155": {
-    "yoshi": false,
-    "score": 0.001
-  },
-  "https://x.com/Cplaviit/status/2064285726632767944": {
-    "yoshi": false,
-    "score": 0.002
-  },
-  "https://x.com/Cplaviit/status/2064276503391777134": {
-    "yoshi": false,
-    "score": 0.087
-  },
-  "https://x.com/Cplaviit/status/2064205815238861181": {
-    "yoshi": false,
-    "score": 0.002
-  },
   "https://x.com/Cplaviit/status/2064626497449832489": {
     "yoshi": false,
     "score": 0.089
@@ -1198,5 +1182,21 @@
   "https://x.com/Cplaviit/status/2071482924613148903": {
     "yoshi": false,
     "score": 0.05
+  },
+  "https://x.com/Cplaviit/status/2071804470326067554": {
+    "yoshi": false,
+    "score": 0.026
+  },
+  "https://x.com/Cplaviit/status/2071798103645311202": {
+    "yoshi": false,
+    "score": 0.026
+  },
+  "https://x.com/Cplaviit/status/2071793807004504140": {
+    "yoshi": true,
+    "score": 0.786
+  },
+  "https://x.com/Cplaviit/status/2071786950798049493": {
+    "yoshi": true,
+    "score": 0.819
   }
 }
