@@ -1,8 +1,4 @@
 {
-  "https://x.com/Cplaviit/status/2069727861318336816": {
-    "yoshi": false,
-    "score": 0.022
-  },
   "https://x.com/Cplaviit/status/2069725922694255015": {
     "yoshi": false,
     "score": 0.003
@@ -1198,5 +1194,9 @@
   "https://x.com/cpla_narashino/status/2076889716776141153": {
     "yoshi": false,
     "score": 0.004
+  },
+  "https://x.com/Cplaviit/status/2076984614821024103": {
+    "yoshi": false,
+    "score": 0.325
   }
 }
