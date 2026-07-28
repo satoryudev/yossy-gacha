@@ -232,7 +232,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081978726586491180",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "cpla_narashino",
@@ -243,7 +246,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081978439788302537",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.011
+    }
   },
   {
     "account": "cpla_narashino",
@@ -254,7 +260,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081978100834045958",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.027
+    }
   },
   {
     "account": "cpla_narashino",
@@ -265,7 +274,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081976352153157894",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.003
+    }
   },
   {
     "account": "cpla_narashino",
@@ -276,7 +288,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081975709891993642",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "cpla_narashino",
@@ -287,7 +302,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081974562410148016",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "cpla_narashino",
@@ -298,7 +316,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081973084387758142",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "Cplaviit",
@@ -337,7 +358,10 @@
     "guid": "https://x.com/cpla_narashino/status/2081968716707922071",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.003
+    }
   },
   {
     "account": "cpla_narashino",
