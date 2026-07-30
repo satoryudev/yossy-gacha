@@ -1,5 +1,5 @@
 {
-  "lastChecked": "2026-07-30T09:21:22.642Z",
+  "lastChecked": "2026-07-30T11:29:42.036Z",
   "shops": [
     "C-pla 津田沼ビート店",
     "C-pla モリシア津田沼店",
@@ -14,13 +14,13 @@
   "visionMethod": "CLIP(無料・ローカル)",
   "fetched": 79,
   "feedCount": 79,
-  "totalMatches": 15,
+  "totalMatches": 16,
   "yoshi": {
     "inStock": true,
     "shops": [
       "C-pla イオンタウン東習志野店"
     ],
-    "since": "Wed, 29 Jul 2026 11:34:03 GMT",
-    "link": "https://x.com/cpla_narashino/status/2082429442656506298"
+    "since": "Thu, 30 Jul 2026 09:50:02 GMT",
+    "link": "https://x.com/cpla_narashino/status/2082765653346558299"
   }
 }
