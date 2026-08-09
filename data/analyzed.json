@@ -1,8 +1,4 @@
 {
-  "https://x.com/cpla_narashino/status/2080962129025548604": {
-    "yoshi": false,
-    "score": 0.003
-  },
   "https://x.com/cpla_narashino/status/2080982081375719502": {
     "yoshi": false,
     "score": 0
@@ -1198,5 +1194,9 @@
   "https://x.com/gachanomori/status/2073198353761051020": {
     "yoshi": false,
     "score": 0.016
+  },
+  "https://x.com/cpla_narashino/status/2086382097749684731": {
+    "yoshi": false,
+    "score": 0.005
   }
 }
