@@ -232,7 +232,10 @@
     "guid": "https://x.com/cpla_narashino/status/2087036569370980736",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.001
+    }
   },
   {
     "account": "cpla_narashino",
@@ -243,7 +246,10 @@
     "guid": "https://x.com/cpla_narashino/status/2087036486810214789",
     "hasImage": true,
     "textHits": [],
-    "vision": null
+    "vision": {
+      "yoshi": false,
+      "score": 0.023
+    }
   },
   {
     "account": "cpla_narashino",
