@@ -1,8 +1,4 @@
 {
-  "https://x.com/cpla_narashino/status/2082045537508106314": {
-    "yoshi": false,
-    "score": 0.043
-  },
   "https://x.com/cpla_narashino/status/2082044846509105178": {
     "yoshi": false,
     "score": 0.003
@@ -1196,6 +1192,10 @@
     "score": 0.065
   },
   "https://x.com/cpla_narashino/status/2087119568636649593": {
+    "yoshi": false,
+    "score": 0.006
+  },
+  "https://x.com/cpla_narashino/status/2087136817154081070": {
     "yoshi": false,
     "score": 0.006
   }
