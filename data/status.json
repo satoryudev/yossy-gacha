@@ -1,5 +1,5 @@
 {
-  "lastChecked": "2026-08-17T04:20:46.363Z",
+  "lastChecked": "2026-08-17T05:08:58.062Z",
   "shops": [
     "C-pla 津田沼ビート店",
     "C-pla モリシア津田沼店",
@@ -12,8 +12,8 @@
     "Yoshi"
   ],
   "visionMethod": "CLIP(無料・ローカル)",
-  "fetched": 38,
-  "feedCount": 38,
+  "fetched": 78,
+  "feedCount": 78,
   "totalMatches": 22,
   "yoshi": {
     "inStock": false,
